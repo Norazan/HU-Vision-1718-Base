@@ -10,6 +10,7 @@
 #include "ImageFactory.h"
 #include "DLLExecution.h"
 
+IntensityImage * convert(RGBImage &rgbi);
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
@@ -24,7 +25,6 @@ int main(int argc, char * argv[]) {
 
 
 
-
 	RGBImage * input = ImageFactory::newRGBImage();
 	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
 		std::cout << "Image could not be loaded!" << std::endl;
@@ -33,6 +33,11 @@ int main(int argc, char * argv[]) {
 	}
 
 	ImageIO::showImage(*input);
+
+	//Converteer naar grayscale
+	IntensityImage * convertedImage = convert(*input);
+
+	ImageIO::showImage(*convertedImage);
 
 	/*ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
 
@@ -52,7 +57,17 @@ int main(int argc, char * argv[]) {
 	return 1;
 }
 
-
+IntensityImage * convert(RGBImage &rgbi) {
+	IntensityImage * _IntensityImage = ImageFactory::newIntensityImage(rgbi.getWidth(), rgbi.getHeight());
+	for (int h = 0; h < _IntensityImage->getHeight(); ++h) {
+		for (int w = 0; w < _IntensityImage->getWidth(); ++w) {
+			//Average grayscaling method
+			Intensity newPixel = (rgbi.getPixel(w, h).r + rgbi.getPixel(w, h).g + rgbi.getPixel(w, h).b) / 3;
+			_IntensityImage->setPixel(w, h, newPixel);
+		}
+	}
+	return _IntensityImage;
+}
 
 
 

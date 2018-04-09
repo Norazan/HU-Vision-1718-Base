@@ -5,7 +5,9 @@
 */
 
 #pragma once
+#include "IntensityImage.h"
 #include "RGBImage.h"
+#include "ImageFactory.h"
 class RGBImageStudent : public RGBImage {
 private:
 	RGB ** pixelStorage;

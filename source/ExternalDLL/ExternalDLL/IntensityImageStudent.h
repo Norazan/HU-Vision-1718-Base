@@ -5,6 +5,7 @@
 */
 
 #pragma once
+#include "RGBImage.h"
 #include "IntensityImage.h"
 class IntensityImageStudent : public IntensityImage {
 private:
@@ -13,7 +14,10 @@ public:
 	IntensityImageStudent();
 	IntensityImageStudent(const IntensityImageStudent &other);
 	IntensityImageStudent(const int width, const int height);
+	IntensityImageStudent(const RGBImage &rgbi);
 	~IntensityImageStudent();
+
+	Intensity convert(const RGB pixel);
 
 	void set(const int width, const int height);
 	void set(const IntensityImageStudent &other);
