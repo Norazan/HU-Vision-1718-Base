@@ -39,30 +39,20 @@ int main(int argc, char * argv[]) {
 
 	ImageIO::showImage(*convertedImage);
 
-	/*ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
-
-	DLLExecution * executor = new DLLExecution(input);
-
-
-	if (executeSteps(executor)) {
-		std::cout << "Face recognition successful!" << std::endl;
-		std::cout << "Facial parameters: " << std::endl;
-		for (int i = 0; i < 16; i++) {
-			std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
-		}
-	}
-
-	delete executor;*/
 	system("pause");
 	return 1;
 }
 
+// Converts the given RGBImage into an IntensityImage using the Luminosity grayscale conversion algorithm.
 IntensityImage * convert(RGBImage &rgbi) {
 	IntensityImage * _IntensityImage = ImageFactory::newIntensityImage(rgbi.getWidth(), rgbi.getHeight());
 	for (int h = 0; h < _IntensityImage->getHeight(); ++h) {
 		for (int w = 0; w < _IntensityImage->getWidth(); ++w) {
-			//Average grayscaling method
-			Intensity newPixel = (rgbi.getPixel(w, h).r + rgbi.getPixel(w, h).g + rgbi.getPixel(w, h).b) / 3;
+			RGB oldPixel = rgbi.getPixel(w, h);
+
+			//Luminosity grayscaling algorithm
+			Intensity newPixel = (Intensity) (oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+
 			_IntensityImage->setPixel(w, h, newPixel);
 		}
 	}
