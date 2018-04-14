@@ -16,6 +16,7 @@
 IntensityImage * convert(RGBImage &rgbi);
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 void testConstructPerformances(unsigned times, unsigned width, unsigned heigth);
+void testConvertPerformance(RGBImage & image, unsigned times);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
@@ -26,24 +27,24 @@ int main(int argc, char * argv[]) {
 
 	ImageIO::debugFolder = "D:\\Users\\jve\\Documents\\School\\Vision\\HU-Vision-1718-ThijsH\\testsets";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
-	testConstructPerformances(1000,500,500);
+	/*testConstructPerformances(1000,500,500);
 	testConstructPerformances(200, 1000, 1000);
 	testConstructPerformances(1000, 5000, 1);
-	testConstructPerformances(1000, 1, 5000);
+	testConstructPerformances(1000, 1, 5000);*/
 
-	//RGBImage * input = ImageFactory::newRGBImage();
-	//if (!ImageIO::loadImage("D:\\Users\\jve\\Documents\\School\\Vision\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
-	//	std::cout << "Image could not be loaded!" << std::endl;
-	//	system("pause");
-	//	return 0;
-	//}
+	RGBImage * input = ImageFactory::newRGBImage();
+	if (!ImageIO::loadImage("D:\\Users\\jve\\Documents\\School\\Vision\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
+		std::cout << "Image could not be loaded!" << std::endl;
+		system("pause");
+		return 0;
+	}
 
-	//ImageIO::showImage(*input);
+	ImageIO::showImage(*input);
+	testConvertPerformance(*input, 1000);
+	//Converteer naar grayscale
+	IntensityImage * convertedImage = convert(*input);
 
-	////Converteer naar grayscale
-	//IntensityImage * convertedImage = convert(*input);
-
-	//ImageIO::showImage(*convertedImage);
+	ImageIO::showImage(*convertedImage);
 
 	system("pause");
 	return 1;
@@ -98,9 +99,18 @@ void testConstructPerformances(unsigned numTest, unsigned width, unsigned height
 	delete[] testImages;
 }
 
-
-
-
+void testConvertPerformance(RGBImage& image, unsigned times) {
+	std::cout << "Testing performance of convert of image with size: " << image.getWidth() << "x" << image.getHeight() << " by taking average of " << times << " times" << std::endl;
+	std::cout << std::fixed << std::setprecision(10);
+	auto t = Clock::now();
+	for(unsigned i = 0; i < times; ++ i) {
+		auto converted = convert(image);
+		delete converted;
+	}
+	auto dur = Clock::getNanoSecondsFrom(t);
+	std::cout << "\tTotal duration: " << dur << " nanoseconds" << std::endl;
+	std::cout << "\tAverage duration: " << dur / double(times) << " nanosends" << std::endl;
+}
 
 bool executeSteps(DLLExecution * executor) {
 
