@@ -23,7 +23,7 @@ RGBImageVector::~RGBImageVector() {
 
 void RGBImageVector::set(const int width, const int height) {
 	pixelStorage.resize(width * height);
-
+	pixelStorage.shrink_to_fit();
 	RGBImage::set(width, height);
 }
 

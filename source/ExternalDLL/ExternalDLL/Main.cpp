@@ -9,8 +9,12 @@
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
-
+#include "Header.h"
+#include "RGBImageArray.h"
+#include "RGBImageVector.h"
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
+void excecuteConstructorTimingTest(unsigned int times, unsigned int width, unsigned int height);
+void excecuteResizeTimingTest(unsigned times, unsigned first, unsigned second);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
@@ -21,32 +25,38 @@ int main(int argc, char * argv[]) {
 
 	ImageIO::debugFolder = "D:\\Users\\Rolf\\Downloads\\FaceMinMin";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
+	excecuteConstructorTimingTest(200, 200, 200);
+	excecuteConstructorTimingTest(200, 400, 400);
+	excecuteConstructorTimingTest(200, 600, 600);
+	excecuteConstructorTimingTest(200, 800, 800);
+	excecuteConstructorTimingTest(200, 1000, 1000);
+	excecuteConstructorTimingTest(200, 1200, 1200);
+	excecuteResizeTimingTest(200, 200, 400);
+	excecuteResizeTimingTest(200, 400, 200);
+	excecuteResizeTimingTest(200, 1000, 500);
+	excecuteResizeTimingTest(200, 500, 1000);
+	//RGBImage * input = ImageFactory::newRGBImage();
+	//if (!ImageIO::loadImage("D:\\Users\\Rolf\\Downloads\\TestA5.jpg", *input)) {
+	//	std::cout << "Image could not be loaded!" << std::endl;
+	//	system("pause");
+	//	return 0;
+	//}
 
 
+	//ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
+
+	//DLLExecution * executor = new DLLExecution(input);
 
 
-	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("D:\\Users\\Rolf\\Downloads\\TestA5.jpg", *input)) {
-		std::cout << "Image could not be loaded!" << std::endl;
-		system("pause");
-		return 0;
-	}
+	//if (executeSteps(executor)) {
+	//	std::cout << "Face recognition successful!" << std::endl;
+	//	std::cout << "Facial parameters: " << std::endl;
+	//	for (int i = 0; i < 16; i++) {
+	//		std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
+	//	}
+	//}
 
-
-	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
-
-	DLLExecution * executor = new DLLExecution(input);
-
-
-	if (executeSteps(executor)) {
-		std::cout << "Face recognition successful!" << std::endl;
-		std::cout << "Facial parameters: " << std::endl;
-		for (int i = 0; i < 16; i++) {
-			std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
-		}
-	}
-
-	delete executor;
+	//delete executor;
 	system("pause");
 	return 1;
 }
@@ -222,4 +232,67 @@ void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features) {
 
 	ImageIO::saveRGBImage(*debug, ImageIO::getDebugFileName("feature-points-debug.png"));
 	delete debug;
+}
+
+void excecuteConstructorTimingTest(unsigned times, unsigned width, unsigned height) {
+	std::cout << "Testing speed of constructor of image with size:" << width << "x" << height << " by taking average of " << times << " times excecution" << std::endl;
+	double dur = 0.0;
+	auto images = new RGBImage*[times];
+	auto t = Clock::now();
+	for (unsigned i = 0; i < times; ++i) {
+		images[i] = new RGBImageArray(width, height);
+	}
+	dur = Clock::getNanoSecondsFrom(t);
+	for (unsigned i = 0; i < times; ++i) {
+		delete images[i];
+	}
+	std::cout << "\tArray: " << std::fixed << std::endl;
+	std::cout << "\t\t-Total time: " << dur / 1000.0 << "microseconds" << std::endl;
+	std::cout << "\t\t-Average time per constructor: " << dur / 1000.0 / double(times) << " microseconds" << std::endl;
+	dur = 0.0;
+	t = Clock::now();
+	for (unsigned i = 0; i < times; ++i) {
+		images[i] = new RGBImageVector(width, height);
+	}
+	dur = Clock::getNanoSecondsFrom(t);
+	for (unsigned i = 0; i < times; ++i) {
+		delete images[i];
+	}
+	std::cout << "\tVector: " << std::fixed << std::endl;
+	std::cout << "\t\t-Total time: " << dur / 1000.0 << "microseconds" << std::endl;
+	std::cout << "\t\t-Average time per constructor: " << dur / 1000.0 / double(times) << " microseconds" << std::endl;
+}
+void excecuteResizeTimingTest(unsigned times, unsigned first, unsigned second) {
+	std::cout << "Resize test: " << first << " -> " << second << std::endl;
+	double dur = 0.0;
+	auto images = new RGBImage*[times];
+	for (unsigned i = 0; i < times; ++i) {
+		images[i] = new RGBImageArray(first, first);
+	}
+	auto t = Clock::now();
+	for (unsigned i = 0; i < times; ++i) {
+		images[i]->set(second, second);
+	}
+	dur = Clock::getNanoSecondsFrom(t);
+	for (unsigned i = 0; i < times; ++i) {
+		delete images[i];
+	}
+	std::cout << "\tArray: " << std::fixed << std::endl;
+	std::cout << "\t\t-Total time: " << dur / 1000.0 << "microseconds" << std::endl;
+	std::cout << "\t\t-Average time per constructor: " << dur / 1000.0 / double(times) << " microseconds" << std::endl;
+	for (unsigned i = 0; i < times; ++i) {
+		images[i] = new RGBImageVector(first, first);
+	}
+	t = Clock::now();
+	for (unsigned i = 0; i < times; ++i) {
+		images[i]->set(second, second);
+	}
+	dur = Clock::getNanoSecondsFrom(t);
+	for (unsigned i = 0; i < times; ++i) {
+		delete images[i];
+	}
+	delete[] images;
+	std::cout << "\tVector: " << std::fixed << std::endl;
+	std::cout << "\t\t-Total time: " << dur / 1000.0 << "microseconds" << std::endl;
+	std::cout << "\t\t-Average time per constructor: " << dur / 1000.0 / double(times) << " microseconds" << std::endl;
 }
