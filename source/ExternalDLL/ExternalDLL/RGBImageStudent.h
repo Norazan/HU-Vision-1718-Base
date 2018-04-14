@@ -12,10 +12,10 @@
 
 #pragma once
 #include "RGBImage.h"
-
+#include <vector>
 class RGBImageStudent : public RGBImage {
 private:
-	RGB * pixelStorage;
+	std::vector<RGB> pixelStorage;
 public:
 	// Empty constructor
 	RGBImageStudent();
@@ -26,7 +26,7 @@ public:
 	// Creates a RGBImageStudent with given width and height.
 	RGBImageStudent(const int width, const int height);
 
-	// Destroys pixelStorage after deallocating it's memory.
+	// Clears pixelStorage allocated memory and shrinks it to fit the curren size (0).
 	~RGBImageStudent();
 
 

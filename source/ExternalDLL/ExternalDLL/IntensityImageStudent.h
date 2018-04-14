@@ -6,9 +6,10 @@
 
 #pragma once
 #include "IntensityImage.h"
+#include <vector>
 class IntensityImageStudent : public IntensityImage {
 private:
-	Intensity * pixelStorage;
+	std::vector<Intensity> pixelStorage;
 public:
 	// Empty constructor
 	IntensityImageStudent();
@@ -19,7 +20,7 @@ public:
 	// Creates a IntensityImageStudent with given width and height.
 	IntensityImageStudent(const int width, const int height);
 
-	// Destroys pixelStorage after deallocating it's memory.
+	// Clears pixelStorage allocated memory and shrinks it to fit the curren size (0).
 	~IntensityImageStudent();
 
 
