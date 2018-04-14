@@ -9,9 +9,13 @@
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
-
+#include "Clock.h"
+#include "RGBImagePrivate.h"
+#include "RGBImageStudent.h"
+#include <iomanip>
 IntensityImage * convert(RGBImage &rgbi);
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
+void testConstructPerformances(unsigned times, unsigned width, unsigned heigth);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
@@ -20,24 +24,26 @@ int main(int argc, char * argv[]) {
 	ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 
-	ImageIO::debugFolder = "C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Debug";
+	ImageIO::debugFolder = "D:\\Users\\jve\\Documents\\School\\Vision\\HU-Vision-1718-ThijsH\\testsets";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
+	testConstructPerformances(1000,500,500);
+	testConstructPerformances(200, 1000, 1000);
+	testConstructPerformances(1000, 5000, 1);
+	testConstructPerformances(1000, 1, 5000);
 
+	//RGBImage * input = ImageFactory::newRGBImage();
+	//if (!ImageIO::loadImage("D:\\Users\\jve\\Documents\\School\\Vision\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
+	//	std::cout << "Image could not be loaded!" << std::endl;
+	//	system("pause");
+	//	return 0;
+	//}
 
+	//ImageIO::showImage(*input);
 
-	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
-		std::cout << "Image could not be loaded!" << std::endl;
-		system("pause");
-		return 0;
-	}
+	////Converteer naar grayscale
+	//IntensityImage * convertedImage = convert(*input);
 
-	ImageIO::showImage(*input);
-
-	//Converteer naar grayscale
-	IntensityImage * convertedImage = convert(*input);
-
-	ImageIO::showImage(*convertedImage);
+	//ImageIO::showImage(*convertedImage);
 
 	system("pause");
 	return 1;
@@ -51,7 +57,7 @@ IntensityImage * convert(RGBImage &rgbi) {
 			RGB oldPixel = rgbi.getPixel(w, h);
 
 			//Luminosity grayscaling algorithm
-			Intensity newPixel = (Intensity) (oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+			Intensity newPixel = Intensity(oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
 
 			_IntensityImage->setPixel(w, h, newPixel);
 		}
@@ -60,7 +66,37 @@ IntensityImage * convert(RGBImage &rgbi) {
 }
 
 
+void testConstructPerformances(unsigned numTest, unsigned width, unsigned height) {
+	std::cout << "Testing constructor timing of image with constructing image of " << width << "x" << height << " " << numTest << " times" << std::endl;
+	RGBImage ** testImages = new RGBImage *[numTest];
+	auto t = Clock::now();
 
+	auto timepointBefore = Clock::now();
+	//Execute function(s)
+	auto durationOfFunction = Clock::getNanoSecondsFrom(timepointBefore);
+	for (unsigned i = 0u; i < numTest; ++i) {
+		testImages[i] = new RGBImagePrivate(width, height);
+	}
+	auto dur = Clock::getNanoSecondsFrom(t);
+	std::cout << "\tPrivate image: " << std::fixed << std::setprecision(10) << std::endl;
+	std::cout << "\t\t-Duration total: " << dur << " nanoseconds" << std::endl;
+	std::cout << "\t\t-Duration average per image: " << dur / double(numTest) << " nanoseconds" << std::endl;
+	for (unsigned i = 0u; i< numTest; ++i) {
+		delete testImages[i];
+	}
+	t = Clock::now();
+	for (unsigned i = 0u; i < numTest; ++i) {
+		testImages[i] = new RGBImageStudent(width, height);
+	}
+	dur = Clock::getNanoSecondsFrom(t);
+	std::cout << "\tStudent image: " << std::endl;
+	std::cout << "\t\t-Duration total: " << dur << " nanoseconds" << std::endl;
+	std::cout << "\t\t-Duration average per image: " << dur / double(numTest) << " nanoseconds" << std::endl;
+	for (unsigned i = 0u; i< numTest; ++i) {
+		delete testImages[i];
+	}
+	delete[] testImages;
+}
 
 
 

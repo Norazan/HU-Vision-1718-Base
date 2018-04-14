@@ -16,10 +16,10 @@ RGBImageStudent::RGBImageStudent(const RGBImageStudent &other) : RGBImage(other.
 }
 
 RGBImageStudent::RGBImageStudent(const int width, const int height) : RGBImage(width, height) {
-	pixelStorage = new RGB*[height];
-	for (int i = 0; i < height; ++i) {
-		pixelStorage[i] = new RGB[width];
-	}
+		pixelStorage = new RGB*[height];
+		for (int i = 0; i < height; ++i) {
+			pixelStorage[i] = new RGB[width];
+		}
 }
 
 RGBImageStudent::~RGBImageStudent() {
@@ -34,7 +34,6 @@ void RGBImageStudent::set(const int width, const int height) {
 		delete[] pixelStorage[i];
 	}
 	delete[] pixelStorage;
-
 	pixelStorage = new RGB *[height];
 	for (int i = 0; i < height; ++i) {
 		pixelStorage[i] = new RGB[width];

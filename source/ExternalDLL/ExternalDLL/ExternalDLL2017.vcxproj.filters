@@ -22,6 +22,9 @@
     <Filter Include="Source Files\private\disableautocomplete">
       <UniqueIdentifier>{9beb7940-6838-4432-ac5a-cb7c572082a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Timing">
+      <UniqueIdentifier>{d1186294-4877-490f-92b2-0d05c8a26870}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Image.h">
@@ -114,6 +117,9 @@
     <ClInclude Include="SonnetXVIII.h">
       <Filter>Header Files\private\disableautocomplete</Filter>
     </ClInclude>
+    <ClInclude Include="Clock.h">
+      <Filter>Header Files\Timing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Image.cpp">
@@ -190,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="SonnetXVIII.cpp">
       <Filter>Source Files\private\disableautocomplete</Filter>
+    </ClCompile>
+    <ClCompile Include="Clock.cpp">
+      <Filter>Header Files\Timing</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
