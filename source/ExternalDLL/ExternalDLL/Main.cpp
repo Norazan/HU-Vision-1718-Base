@@ -11,33 +11,21 @@
 #include "DLLExecution.h"
 
 IntensityImage * convert(RGBImage &rgbi);
+void TestCorrectheid();
+bool areImagesEqual(RGBImage &first, RGBImage &other);
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
 
 	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
-	ImageFactory::setImplementation(ImageFactory::STUDENT);
+	//ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 
 	ImageIO::debugFolder = "C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Debug";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
 
-
-
-	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
-		std::cout << "Image could not be loaded!" << std::endl;
-		system("pause");
-		return 0;
-	}
-
-	ImageIO::showImage(*input);
-
-	//Converteer naar grayscale
-	IntensityImage * convertedImage = convert(*input);
-
-	ImageIO::showImage(*convertedImage);
+	TestCorrectheid();
 
 	system("pause");
 	return 1;
@@ -61,7 +49,55 @@ IntensityImage * convert(RGBImage &rgbi) {
 	return _IntensityImage;
 }
 
+void TestCorrectheid() {
+	ImageFactory::setImplementation(ImageFactory::DEFAULT);
 
+	RGBImage * rgbDefault = ImageFactory::newRGBImage();
+	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *rgbDefault)) {
+		std::cout << "Image could not be loaded!" << std::endl;
+		system("pause");
+		return;
+	}
+
+	ImageFactory::setImplementation(ImageFactory::STUDENT);
+
+	RGBImage * rgbStudent = ImageFactory::newRGBImage();
+	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *rgbStudent)) {
+		std::cout << "Image could not be loaded!" << std::endl;
+		system("pause");
+		return;
+	}
+
+	if (areImagesEqual(*rgbDefault, *rgbStudent)) {
+		std::cout << "Images are equal.\n";
+	}
+	else {
+		std::cout << "Images are not equal.\n";
+	}
+}
+
+bool areImagesEqual(RGBImage &first, RGBImage &other) {
+	if (first.getHeight() != other.getHeight())
+		return false;
+
+	if (first.getWidth() != other.getWidth())
+		return false;
+
+	int pixelCount = first.getHeight() * first.getWidth();
+
+	for (int i = 0; i < pixelCount; ++i) {
+		RGB firstPixel = first.getPixel(i);
+		RGB otherPixel = other.getPixel(i);
+
+		if (firstPixel.r != otherPixel.r)
+			return false;
+		if (firstPixel.g != otherPixel.g)
+			return false;
+		if (firstPixel.b != otherPixel.b)
+			return false;
+	}
+	return true;
+}
 
 
 
