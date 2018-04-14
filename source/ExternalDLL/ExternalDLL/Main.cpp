@@ -10,48 +10,56 @@
 #include "ImageFactory.h"
 #include "DLLExecution.h"
 
+IntensityImage * convert(RGBImage &rgbi);
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
 
-	ImageFactory::setImplementation(ImageFactory::DEFAULT);
-	//ImageFactory::setImplementation(ImageFactory::STUDENT);
+	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
+	ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 
-	ImageIO::debugFolder = "D:\\Users\\Rolf\\Downloads\\FaceMinMin";
+	ImageIO::debugFolder = "C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Debug";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
 
 
 
-
 	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("D:\\Users\\Rolf\\Downloads\\TestA5.jpg", *input)) {
+	if (!ImageIO::loadImage("C:\\School\\VS Projects\\HU-Vision-1718-ThijsH\\testsets\\Set A\\TestSet Images\\child-1.png", *input)) {
 		std::cout << "Image could not be loaded!" << std::endl;
 		system("pause");
 		return 0;
 	}
 
+	ImageIO::showImage(*input);
 
-	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
+	//Converteer naar grayscale
+	IntensityImage * convertedImage = convert(*input);
 
-	DLLExecution * executor = new DLLExecution(input);
+	ImageIO::showImage(*convertedImage);
 
-
-	if (executeSteps(executor)) {
-		std::cout << "Face recognition successful!" << std::endl;
-		std::cout << "Facial parameters: " << std::endl;
-		for (int i = 0; i < 16; i++) {
-			std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
-		}
-	}
-
-	delete executor;
 	system("pause");
 	return 1;
 }
 
+// Converts the given RGBImage into an IntensityImage using the Luminosity grayscale conversion algorithm.
+IntensityImage * convert(RGBImage &rgbi) {
+	IntensityImage * _IntensityImage = ImageFactory::newIntensityImage(rgbi.getWidth(), rgbi.getHeight());
 
+	int pixelCount = _IntensityImage->getHeight() * _IntensityImage->getWidth();
+
+	for (int i = 0; i < pixelCount; ++i) {
+		RGB oldPixel = rgbi.getPixel(i);
+
+		//Luminosity grayscaling algorithm
+		Intensity newPixel = (Intensity)(oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+
+		_IntensityImage->setPixel(i, newPixel);
+	}
+
+	return _IntensityImage;
+}
 
 
 
