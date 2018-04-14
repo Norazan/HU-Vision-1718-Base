@@ -8,7 +8,7 @@
 #include "IntensityImage.h"
 class IntensityImageStudent : public IntensityImage {
 private:
-	Intensity ** pixelStorage;
+	Intensity * pixelStorage;
 public:
 	// Empty constructor
 	IntensityImageStudent();

@@ -6,52 +6,32 @@ RGBImageStudent::RGBImageStudent() : RGBImage() {
 
 
 RGBImageStudent::RGBImageStudent(const RGBImageStudent &other) : RGBImage(other.getWidth(), other.getHeight()) {
-	pixelStorage = new RGB*[other.getHeight()];
-	for (int i = 0; i < other.getHeight(); ++i) {
-		pixelStorage[i] = new RGB[other.getWidth()];
-	}
+	pixelStorage = new RGB[other.getWidth() * other.getHeight()];
 	for (int i = 0; i < (getHeight() * getWidth()); ++i) {
 		setPixel(i, other.getPixel(i));
 	}
 }
 
 RGBImageStudent::RGBImageStudent(const int width, const int height) : RGBImage(width, height) {
-	pixelStorage = new RGB*[height];
-	for (int i = 0; i < height; ++i) {
-		pixelStorage[i] = new RGB[width];
-	}
+	pixelStorage = new RGB[width * height];
 }
 
 RGBImageStudent::~RGBImageStudent() {
-	for (int i = 0; i < getHeight(); ++i) {
-		delete[] pixelStorage[i];
-	}
 	delete[] pixelStorage;
 }
 
 void RGBImageStudent::set(const int width, const int height) {
-	for (int i = 0; i < getHeight(); ++i) {
-		delete[] pixelStorage[i];
-	}
 	delete[] pixelStorage;
 
-	pixelStorage = new RGB *[height];
-	for (int i = 0; i < height; ++i) {
-		pixelStorage[i] = new RGB[width];
-	}
+	pixelStorage = new RGB[width * height];
+
 	RGBImage::set(width, height);
 }
 
 void RGBImageStudent::set(const RGBImageStudent &other) {
-	for (int i = 0; i < getHeight(); ++i) {
-		delete[] pixelStorage[i];
-	}
 	delete[] pixelStorage;
 
-	pixelStorage = new RGB *[other.getHeight()];
-	for (int i = 0; i < other.getHeight(); ++i) {
-		pixelStorage[i] = new RGB[other.getWidth()];
-	}
+	pixelStorage = new RGB[other.getWidth() * other.getHeight()];
 	RGBImage::set(other.getWidth(), other.getHeight());
 	for (int i = 0; i < (getHeight() * getWidth()); ++i) {
 		setPixel(i, other.getPixel(i));
@@ -59,21 +39,19 @@ void RGBImageStudent::set(const RGBImageStudent &other) {
 }
 
 void RGBImageStudent::setPixel(int x, int y, RGB pixel) {
-	pixelStorage[y][x] = pixel;
+	int pixelIndex = (y * getWidth()) + x;
+	pixelStorage[pixelIndex] = pixel;
 }
 
 void RGBImageStudent::setPixel(int i, RGB pixel) {
-	int pixelHeight = (int)floor(i / getHeight());
-	int pixelWidth = i % getHeight();
-	pixelStorage[pixelHeight][pixelWidth] = pixel;
+	pixelStorage[i] = pixel;
 }
 
 RGB RGBImageStudent::getPixel(int x, int y) const {
-	return pixelStorage[y][x];
+	int pixelIndex = (y * getWidth()) + x;
+	return pixelStorage[pixelIndex];
 }
 
 RGB RGBImageStudent::getPixel(int i) const {
-	int pixelHeight = (int)floor(i / getHeight());
-	int pixelWidth = i % getHeight();
-	return pixelStorage[pixelHeight][pixelWidth];
+	return pixelStorage[i];
 }

@@ -15,7 +15,7 @@
 
 class RGBImageStudent : public RGBImage {
 private:
-	RGB ** pixelStorage;
+	RGB * pixelStorage;
 public:
 	// Empty constructor
 	RGBImageStudent();

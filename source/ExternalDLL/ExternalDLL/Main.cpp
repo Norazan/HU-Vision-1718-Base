@@ -46,16 +46,18 @@ int main(int argc, char * argv[]) {
 // Converts the given RGBImage into an IntensityImage using the Luminosity grayscale conversion algorithm.
 IntensityImage * convert(RGBImage &rgbi) {
 	IntensityImage * _IntensityImage = ImageFactory::newIntensityImage(rgbi.getWidth(), rgbi.getHeight());
-	for (int h = 0; h < _IntensityImage->getHeight(); ++h) {
-		for (int w = 0; w < _IntensityImage->getWidth(); ++w) {
-			RGB oldPixel = rgbi.getPixel(w, h);
 
-			//Luminosity grayscaling algorithm
-			Intensity newPixel = (Intensity) (oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+	int pixelCount = _IntensityImage->getHeight() * _IntensityImage->getWidth();
 
-			_IntensityImage->setPixel(w, h, newPixel);
-		}
+	for (int i = 0; i < pixelCount; ++i) {
+		RGB oldPixel = rgbi.getPixel(i);
+
+		//Luminosity grayscaling algorithm
+		Intensity newPixel = (Intensity)(oldPixel.r * 0.2126) + (oldPixel.g * 0.7152) + (oldPixel.b * 0.0722);
+
+		_IntensityImage->setPixel(i, newPixel);
 	}
+
 	return _IntensityImage;
 }
 
